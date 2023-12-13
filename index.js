@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000
 //middlewares
 app.use(cors({
   origin: [
-    'http://localhost:5173',
+    // 'http://localhost:5173',
     'https://book-beacon.web.app',
     'https://book-beacon.firebaseapp.com',
 ],
@@ -59,6 +59,7 @@ async function run() {
     const categoryCollection = client.db('BookBeaconDB').collection('category')
     const bookCollection = client.db('BookBeaconDB').collection('books')
     const userCollection = client.db('BookBeaconDB').collection('user')
+    const userInfoCollection = client.db('BookBeaconDB').collection('userInfo')
     const reviewCollection = client.db('BookBeaconDB').collection('reviews')
 
     // auth api
@@ -175,6 +176,17 @@ async function run() {
         const result = await userCollection.deleteOne(query)
         res.send(result)
     })
+    app.post('/users', async(req, res)=>{
+      const user = req.body
+      // insert email if user doesn't exists(social login)
+      const query = {email: user.email}
+      const isExist = await userCollection.findOne(query)
+      if(isExist){
+          return res.send({message:'user already exists', insertedId: null})
+      }
+      const result = await userInfoCollection.insertOne(user)
+      res.send(result)
+  })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
