@@ -10,7 +10,8 @@ const port = process.env.PORT || 5000
 //middlewares
 app.use(cors({
   origin: [
-    // 'http://localhost:5173',
+    'http://localhost:5173',
+    'http://localhost:5199',
     'https://book-beacon.web.app',
     'https://book-beacon.firebaseapp.com',
 ],
